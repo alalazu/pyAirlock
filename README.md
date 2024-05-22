@@ -1,5 +1,5 @@
-| GitHub | PyPI | Documentation |
-| ------ | ---- | ------------- |
+| GitHub | PyPI |
+| ------ | ---- |
 | [![GitHub](https://img.shields.io/badge/GitHub-pyAirlock-blue?logo=github)](https://github.com/alalazu/pyAirlock) | [![PyPI](https://img.shields.io/pypi/v/pyAirlock?logo=pypi)](https://pypi.org/project/pyAirlock/) |
 
 # pyAirlock
@@ -66,7 +66,7 @@ from pyAirlock.common import config
 
 cfg = config.Config( "src/samples/config.yaml" )
 cfg.load()
-server = cfg.get( 'servers.prod' )[0]
+server = cfg.get( 'servers.test' )[0]
 gw = gateway.GW( "test", cfg.get( 'hostname', base=server ), cfg.get( 'apikey', base=server ))
 gw.setTLSVerify( False )
 gw.connect()
