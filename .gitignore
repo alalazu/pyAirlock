@@ -1,0 +1,12 @@
+.venv/
+.vscode/
+html/
+dist/
+ebuilds/
+/*.zip
+/.vs
+src/.vs
+src/config.yaml
+src/pyAirlock.egg-info
+__pycache__/
+
