@@ -72,3 +72,12 @@ gw.setTLSVerify( False )
 gw.connect()
 gw.get( "/configuration/configurations" ).json()
 ```
+
+## Getting support
+
+This library is not part of the official Airlock product delivery. Airlock support will be unable
+to accept or answer tickets.
+
+If you encounter an error, the author welcomes pull requests with fixes. Alternatively, an issue may be created
+on the [GitHub issue tracker](https://github.com/alalazu/pyAirlock/issues).
+Please note that there is no guaranteed response time and any support is best effort.
