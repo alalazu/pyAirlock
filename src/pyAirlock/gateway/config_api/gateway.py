@@ -28,6 +28,7 @@ import json
 import os
 import requests
 import tempfile
+import traceback
 import urllib3
 
 from urllib3.exceptions import MaxRetryError
@@ -276,7 +277,7 @@ class GW( object ):
         # self.session.mount( self._url, HTTPAdapter( max_retries=retries ))
         try:
             resp = self.post( "/session/create", expect=[200] )
-        except MaxRetryError:
+        except exception.AirlockCommunicationError:
             self.session = None
             raise exception.AirlockConnectionError()
         resp = self.get( "/system/status/node", expect=[200] )
@@ -315,7 +316,10 @@ class GW( object ):
 
         For standard scripts, this is not required.
         """
-        self.get( "/configuration/license", expect=[200] )
+        try:
+            self.get( "/configuration/license", expect=[200] )
+        except exception.AirlockCommunicationError:
+            pass
 
     def get( self, path: str, accept=None, timeout=None, expect: list[int]=None ):
         """
@@ -330,11 +334,14 @@ class GW( object ):
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.get( f"{self._url}{path}",
-                                 headers=self._headers( accept=accept ),
-                                 timeout=self._timeout if timeout == None else timeout,
-                                 verify=self._verify() )
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.get( f"{self._url}{path}",
+                                    headers=self._headers( accept=accept ),
+                                    timeout=self._timeout if timeout == None else timeout,
+                                    verify=self._verify() )
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def post( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
         """
@@ -351,12 +358,15 @@ class GW( object ):
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.post( f"{self._url}{path}",
-                                  headers=self._headers( accept=accept, content=content ),
-                                  timeout=self._timeout if timeout == None else timeout,
-                                  verify=self._verify(),
-                                  data=json.dumps( data ))
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.post( f"{self._url}{path}",
+                                    headers=self._headers( accept=accept, content=content ),
+                                    timeout=self._timeout if timeout == None else timeout,
+                                    verify=self._verify(),
+                                    data=json.dumps( data ))
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def patch( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
         """
@@ -373,12 +383,15 @@ class GW( object ):
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.patch( f"{self._url}{path}",
-                                   headers=self._headers( accept=accept, content=content ),
-                                   timeout=self._timeout if timeout == None else timeout,
-                                   verify=self._verify(),
-                                   data=json.dumps( data ) )
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.patch( f"{self._url}{path}",
+                                    headers=self._headers( accept=accept, content=content ),
+                                    timeout=self._timeout if timeout == None else timeout,
+                                    verify=self._verify(),
+                                    data=json.dumps( data ) )
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def put( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
         """
@@ -395,12 +408,15 @@ class GW( object ):
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.put( f"{self._url}{path}",
-                                 headers=self._headers( accept=accept, content=content ),
-                                 timeout=self._timeout if timeout == None else timeout,
-                                 verify=self._verify(),
-                                 data=json.dumps( data ) )
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.put( f"{self._url}{path}",
+                                    headers=self._headers( accept=accept, content=content ),
+                                    timeout=self._timeout if timeout == None else timeout,
+                                    verify=self._verify(),
+                                    data=json.dumps( data ) )
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def delete( self, path: str, data=None, accept=None, timeout=None, expect: list[int]=None ):
         """
@@ -416,12 +432,15 @@ class GW( object ):
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.delete( f"{self._url}{path}",
-                                    headers=self._headers( accept=accept ),
-                                    timeout=self._timeout if timeout == None else timeout,
-                                    verify=self._verify(),
-                                    data=json.dumps( data ) )
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.delete( f"{self._url}{path}",
+                                        headers=self._headers( accept=accept ),
+                                        timeout=self._timeout if timeout == None else timeout,
+                                        verify=self._verify(),
+                                        data=json.dumps( data ) )
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def upload( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ):
         """
@@ -437,12 +456,15 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.put( f"{self._url}{path}",
-                                 headers=self._headers( content=content ),
-                                 timeout=self._timeout if timeout == None else timeout,
-                                 verify=self._verify(),
-                                 files=files )
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.put( f"{self._url}{path}",
+                                    headers=self._headers( content=content ),
+                                    timeout=self._timeout if timeout == None else timeout,
+                                    verify=self._verify(),
+                                    files=files )
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def uploadCopy( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ):
         """
@@ -458,12 +480,15 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `timeout`: override the default session timeout, specify number of seconds
         """
-        resp = self.session.post( f"{self._url}{path}",
-                                  headers=self._headers( content=content ),
-                                  timeout=self._timeout if timeout == None else timeout,
-                                  verify=self._verify(),
-                                  files=files )
-        return self._validateResponse( resp, path, expect )
+        try:
+            resp = self.session.post( f"{self._url}{path}",
+                                    headers=self._headers( content=content ),
+                                    timeout=self._timeout if timeout == None else timeout,
+                                    verify=self._verify(),
+                                    files=files )
+            return self._validateResponse( resp, path, expect )
+        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+            raise exception.AirlockCommunicationError
     
     def _headers( self, accept=None, content=None ):
         """
