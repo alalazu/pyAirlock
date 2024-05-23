@@ -52,6 +52,9 @@ class Info( object ):
     def black( self, msg: str ):
         print( Fore.BLACK + msg + Style.RESET_ALL )
     
+    def grey( self, msg: str ):
+        print( Fore.LIGHTBLACK_EX + msg + Style.RESET_ALL )
+    
     def white( self, msg: str ):
         print( Fore.WHITE + msg + Style.RESET_ALL )
     
