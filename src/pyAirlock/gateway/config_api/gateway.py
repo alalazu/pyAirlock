@@ -304,9 +304,10 @@ class GW( object ):
 
         This session will no longer count as existing parallel session in Config Center nor cause a warning that another administrator is active.
         """
-        self.post( "/session/terminate", expect=[200] )
+        if self.session:
+            self.post( "/session/terminate", expect=[200] )
+            self._log.info( "Disconnected from '%s'" % (self._name,) )
         self.session = None
-        self._log.info( "Disconnected from '%s'" % (self._name,) )
 
     def keepalive( self ):
         """
@@ -340,7 +341,7 @@ class GW( object ):
                                     timeout=self._timeout if timeout == None else timeout,
                                     verify=self._verify() )
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def post( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
@@ -365,7 +366,7 @@ class GW( object ):
                                     verify=self._verify(),
                                     data=json.dumps( data ))
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def patch( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
@@ -390,7 +391,7 @@ class GW( object ):
                                     verify=self._verify(),
                                     data=json.dumps( data ) )
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def put( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
@@ -415,7 +416,7 @@ class GW( object ):
                                     verify=self._verify(),
                                     data=json.dumps( data ) )
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def delete( self, path: str, data=None, accept=None, timeout=None, expect: list[int]=None ):
@@ -439,7 +440,7 @@ class GW( object ):
                                         verify=self._verify(),
                                         data=json.dumps( data ) )
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def upload( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ):
@@ -463,7 +464,7 @@ class GW( object ):
                                     verify=self._verify(),
                                     files=files )
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def uploadCopy( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ):
@@ -487,7 +488,7 @@ class GW( object ):
                                     verify=self._verify(),
                                     files=files )
             return self._validateResponse( resp, path, expect )
-        except (requests.exceptions.ConnectTimeout, urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.MaxRetryError) as e:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
     def _headers( self, accept=None, content=None ):
