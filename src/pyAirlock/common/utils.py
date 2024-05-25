@@ -33,6 +33,6 @@ def getDictValue( d: dict=None, path: str=None, default=None ):
     for key in path.split( '.' ):
         try:
             d = d[key]
-        except KeyError:
+        except (KeyError, TypeError) as e:
             return default
     return d

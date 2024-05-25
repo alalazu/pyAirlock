@@ -40,7 +40,7 @@ class OpenAPI( element.ConfigElement ):
         * `id`: identifier of OpenAPI document
         """
         resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}/content", expect=[200], accept="application/octet-stream" )
-        return resp.content()
+        return resp.content
     
     def upload( self, id: int, data ) -> bool:
         """

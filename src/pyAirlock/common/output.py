@@ -25,39 +25,39 @@ class Info( object ):
     def __init__( self, theme: str="dark" ):
         self._theme = theme
 
-    def label( self, msg: str ):
-        print( Fore.WHITE + msg + Style.RESET_ALL )
+    def label( self, msg: str, end="\n" ):
+        print( Fore.WHITE + msg + Style.RESET_ALL, end=end )
 
-    def msg( self, msg: str ):
-        print( Fore.CYAN + msg + Style.RESET_ALL )
+    def msg( self, msg: str, end="\n" ):
+        print( Fore.CYAN + msg + Style.RESET_ALL, end=end )
     
-    def nocolor( self, msg: str ):
+    def nocolor( self, msg: str, end="\n" ):
         print( msg )
     
-    def yellow( self, msg: str ):
-        print( Fore.YELLOW + msg + Style.RESET_ALL )
+    def yellow( self, msg: str, end="\n" ):
+        print( Fore.YELLOW + msg + Style.RESET_ALL, end=end )
     
-    def green( self, msg: str ):
-        print( Fore.GREEN + msg + Style.RESET_ALL )
+    def green( self, msg: str, end="\n" ):
+        print( Fore.GREEN + msg + Style.RESET_ALL, end=end )
     
-    def blue( self, msg: str ):
-        print( Fore.BLUE + msg + Style.RESET_ALL )
+    def blue( self, msg: str, end="\n" ):
+        print( Fore.BLUE + msg + Style.RESET_ALL, end=end )
     
-    def red( self, msg: str ):
-        print( Fore.RED + msg + Style.RESET_ALL )
+    def red( self, msg: str, end="\n" ):
+        print( Fore.RED + msg + Style.RESET_ALL, end=end )
     
-    def cyan( self, msg: str ):
-        print( Fore.CYAN + msg + Style.RESET_ALL )
+    def cyan( self, msg: str, end="\n" ):
+        print( Fore.CYAN + msg + Style.RESET_ALL, end=end )
     
-    def black( self, msg: str ):
-        print( Fore.BLACK + msg + Style.RESET_ALL )
+    def black( self, msg: str, end="\n" ):
+        print( Fore.BLACK + msg + Style.RESET_ALL, end=end )
     
-    def grey( self, msg: str ):
-        print( Fore.LIGHTBLACK_EX + msg + Style.RESET_ALL )
+    def grey( self, msg: str, end="\n" ):
+        print( Fore.LIGHTBLACK_EX + msg + Style.RESET_ALL, end=end )
     
-    def white( self, msg: str ):
-        print( Fore.WHITE + msg + Style.RESET_ALL )
+    def white( self, msg: str, end="\n" ):
+        print( Fore.WHITE + msg + Style.RESET_ALL, end=end )
     
-    def magenta( self, msg: str ):
-        print( Fore.MAGENTA + msg + Style.RESET_ALL )
+    def magenta( self, msg: str, end="\n" ):
+        print( Fore.MAGENTA + msg + Style.RESET_ALL, end=end )
     
