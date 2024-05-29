@@ -265,7 +265,7 @@ class GW( object ):
             return True
         return False
     
-    def connect( self ):
+    def connect( self ) -> bool:
         """
         Establish session with Airlock Gateway.
         """
@@ -308,7 +308,7 @@ class GW( object ):
             self.post( "/session/terminate", expect=[200] )
             self._log.info( "Disconnected from '%s'" % (self._name,) )
         self.session = None
-
+    
     def keepalive( self ):
         """
         A session to an Airlock Gateway times out after about 10 minutes of inactivity.
@@ -322,7 +322,7 @@ class GW( object ):
         except exception.AirlockCommunicationError:
             pass
 
-    def get( self, path: str, accept=None, timeout=None, expect: list[int]=None ):
+    def get( self, path: str, accept=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API GET and return HTTP response.
         
@@ -334,6 +334,8 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.get( f"{self._url}{path}",
@@ -344,7 +346,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def post( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
+    def post( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API POST and return HTTP response.
         
@@ -358,6 +360,8 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.post( f"{self._url}{path}",
@@ -369,7 +373,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def patch( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
+    def patch( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API PATCH and return HTTP response.
         
@@ -383,6 +387,8 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.patch( f"{self._url}{path}",
@@ -394,7 +400,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def put( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ):
+    def put( self, path: str, data=None, accept=None, content=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API PUT and return HTTP response.
         
@@ -408,6 +414,8 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.put( f"{self._url}{path}",
@@ -419,7 +427,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def delete( self, path: str, data=None, accept=None, timeout=None, expect: list[int]=None ):
+    def delete( self, path: str, data=None, accept=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API DELETE and return HTTP response.
         
@@ -432,6 +440,8 @@ class GW( object ):
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `accept`: set if you expect something else than 'application/json' as response
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.delete( f"{self._url}{path}",
@@ -443,7 +453,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def upload( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ):
+    def upload( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API PUT to upload a file and return HTTP response.
         
@@ -456,6 +466,8 @@ class GW( object ):
         * `content`: must be set to the uploaded data's content type (which is probably not 'application/json')
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.put( f"{self._url}{path}",
@@ -467,7 +479,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def uploadCopy( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ):
+    def uploadCopy( self, path: str, files=None, content=None, timeout=None, expect: list[int]=None ) -> requests.Response:
         """
         Perform REST API POST to upload a file and return HTTP response.
         
@@ -480,6 +492,8 @@ class GW( object ):
         * `content`: must be set to the uploaded data's content type (which is probably not 'application/json')
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `timeout`: override the default session timeout, specify number of seconds
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         try:
             resp = self.session.post( f"{self._url}{path}",
@@ -491,7 +505,7 @@ class GW( object ):
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
     
-    def _headers( self, accept=None, content=None ):
+    def _headers( self, accept=None, content=None ) -> dict:
         """
         Return dict with HTTP headers to send to Airlock Gateway.
 
@@ -507,7 +521,7 @@ class GW( object ):
             hdr['Content-Type'] = content
         return hdr
     
-    def _verify( self ):
+    def _verify( self ) -> bool:
         """ Return certificate verification setting for requests library. """
         verify=True
         if self._certfile != None:
@@ -516,7 +530,7 @@ class GW( object ):
             verify = False
         return verify
     
-    def _validateResponse( self, response, path: str, expect: list[int] ):
+    def _validateResponse( self, response, path: str, expect: list[int] ) -> requests.Response:
         """
         Validate the response has one of the expect status codes
 
@@ -525,6 +539,8 @@ class GW( object ):
         * `response`: the response to validate
         * `expect`: list of expected HTTP response codes, other values result in exceptions
         * `path`: original request path, for logging only
+
+        Returns: [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
         """
         if expect:
             if response.status_code not in expect:

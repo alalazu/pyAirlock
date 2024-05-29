@@ -24,6 +24,7 @@ it works, e.g. the requirements for loading and activating a configuration.
 """
 
 import json
+import requests
 
 from typing import Union
 
@@ -59,10 +60,12 @@ class Configuration( element.ConfigElement ):
     def create( self ) -> dict:
         """
         Use REST API to create an emtpy configuration in workspace
-        """
-        return self._post( "load-empty-config", expect=[204] )
 
-    def update( self, activation: dict ) -> Union[dict, None]:
+        Returns: REST API response element `data` as dict
+        """
+        return self.post( subpath="load-empty-config", expect=[204] )
+
+    def update( self, activation: dict ) -> bool:
         """
         Activate a configuration
 
@@ -72,20 +75,24 @@ class Configuration( element.ConfigElement ):
           * `options`
           * `group`
           See `activate` for details.
+
+        Returns: True on success, False otherwise
         """
         comment = utils.getDictValue( activation, 'comment' )
         options = utils.getDictValue( activation, 'options' )
         group = utils.getDictValue( activation, 'group' )
         return self.activate( comment=comment, options=options, group=group )
 
-    def delete( self, id: int ):
+    def delete( self, id: int ) -> bool:
         """
         Delete a specified configuration
         
         Parameter:
         * `id`: Identifier of configuration
+
+        Returns: True on success, False otherwise
         """
-        resp = self._gw.delete( f"/configuration/configurations/{id}", expect=[204,400,404] )
+        resp = self.delete( id=id, expect=[204,400,404] )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such config: {id}" )
             return False
@@ -95,7 +102,14 @@ class Configuration( element.ConfigElement ):
         return True
     
     def access_all( self ) -> Union[list[dict], None]:
-        """ Get list of all configurations """
+        """
+        Get list of all configurations
+
+        Returns:
+        * REST API response element `data` as dict or list of dicts
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
+        """
         return self.read()
     
     def load( self, id: int ) -> bool:
@@ -104,12 +118,18 @@ class Configuration( element.ConfigElement ):
         
         Parameter:
         * `id`: Identifier of configuration
+
+        Returns: True
         """
-        return self._post( "load", id, expect=[204,404] )
+        return self.post( id=id, subpath="load", expect=[204,404] )
     
     def load_active( self ) -> bool:
-        """ Load currently active configuration into workspace """
-        return self._post( "load-active", expect=[204] )
+        """
+        Load currently active configuration into workspace
+
+        Returns: True
+        """
+        return self.post( subpath="load-active", expect=[204] )
     
     def activate( self, comment=None, options: dict=None, group: list=None ) -> bool:
         """
@@ -141,7 +161,7 @@ class Configuration( element.ConfigElement ):
             self._log.warning( f"{self._name}: Config not valid" )
             return False
         params = json.dumps( {'comment': comment })
-        resp = self._gw.post( "/configuration/configurations/activate", data=params, expect=[200,400,409] )
+        resp = self.post( subpath="activate", data=params, expect=[200,400,409] )
         if resp.status_code != 200:
             self._log.error( f"{self._name}: Config activation failed: {resp.status_code} ({resp.text})" )
             return False
@@ -154,6 +174,8 @@ class Configuration( element.ConfigElement ):
         Save this configuration.
         
         A `comment` is required. If you absolutely don't want to specify one, you may pass comment=\"\".
+
+        Returns: True on success, False otherwise
         """ 
         if comment == None:
             self._log.warn( "No comment specified! If you don't want to specify one, please use '<obj>.activate( comment=\"\" )'" )
@@ -162,18 +184,22 @@ class Configuration( element.ConfigElement ):
             params = json.dumps( {'comment': comment })
         else:
             params = None
-        resp = self._gw.post( "/configuration/configurations/save", data=params, expect=[204,400] )
+        resp = self.post( subpath="save", data=params, expect=[204,400] )
         if resp.status_code != 200:
             self._log.error( f"{self._name}: Config save failed: {resp.status_code} ({resp.text})" )
             return False
         return True
     
-    def export( self, id: int=None, zip_file: str=None ):
+    def export( self, id: int=None, zip_file: str=None ) -> Union[requests.Response,None]:
         """
         Download configuration from Airlock Gateway as a zip file.
 
         If `id` is not specified, download currently active configuration.
         If `zip_file` is specified, configuration is saved to it. Otherwise, it is contained in the return value.
+
+        Returns:
+        * [requests.Response](https://requests.readthedocs.io/en/latest/api/#requests.Response) object
+        * None if config has been written successfully to `zip_file`
         """
         if id:
             resp = self._gw.get( f"/configuration/configurations/{id}/export", accept="application/zip", expect=[200,400,404] )
@@ -203,13 +229,15 @@ class Configuration( element.ConfigElement ):
         
         * `zip_file`: path to ZIP file with Airlock Gateway configuration
         * `verify`: if true, upload will fail if configuration has errors (workspace will contain empty config)
+
+        Returns: True on success, False otherwise
         """
         try:
             files = { 'file': open( zip_file, 'rb' ) }
         except OSError as e:
             e.add_note( f"File: {zip_file}" )
             raise exception.AirlockFileNotFoundError()
-        self._gw.get( f"/configuration/configurations/import", content="application/zip", files=files, expect=[200] )
+        self.put( subpath="import", content="application/zip", files=files, expect=[200] )
         if verify:
             if self.validate() != []:
                 self._log.warning( f"{self._name}: Uploaded config not valid - replaced with empty config" )
@@ -222,9 +250,13 @@ class Configuration( element.ConfigElement ):
         return True
     
     def validate( self ) -> list[str]:
-        """ Retrieve validation messages for this configuration """
+        """
+        Retrieve validation messages for this configuration
+        
+        Returns: list of validation messages, see [doc](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#access-all-validator-messages)
+        """
         messages = []
-        resp = self._gw.get( "/configuration/validator-messages", expect=[200] )
+        resp = self.get( subpath="validator-messages", expect=[200] )
         if resp.text != "":
             for entry in resp.json()['data']:
                 messages.append( entry )

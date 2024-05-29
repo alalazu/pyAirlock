@@ -56,6 +56,8 @@ class ConfigElement( object ):
         Parameters:
 
         * `data`: dict with configuration element data structure. Please refer to Airlock Gateway REST API documentation (https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html) for details. Will be converted to JSON.
+
+        Returns: REST API response element `data` as dict
         """
         if 'relationships' in data:
             raise exception.AirlockDataConnectionError()
@@ -78,6 +80,11 @@ class ConfigElement( object ):
         Parameters:
 
         * `id`: identifier of configuration element to retrieve, if not set, all elements are returned
+
+        Returns:
+        * REST API response element `data` as dict or list of dicts
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
         """
         if id:
             resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}", expect=[200,404] )
@@ -101,6 +108,11 @@ class ConfigElement( object ):
 
         * `id`: identifier of configuration element to update
         * `data`: dict with configuration element data structure. Please refer to Airlock Gateway REST API documentation (https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html) for details. Will be converted to JSON.
+
+        Returns:
+        * REST API response element `data` as dict
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
         """
         try:
             del data['relationships']
@@ -131,8 +143,9 @@ class ConfigElement( object ):
         * `subpath`: configuration element specific path under REST API endpoint
         * `data`: dict with correct structure, depending on class. Please refer to Airlock Gateway REST API documentation (https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html) for details. Will be converted to JSON.
         * `expect`: list of expected HTTP response codes, other values result in exceptions
+
+        Returns: True on success, False otherwise
         """
-        """ REST API delete call to configuration element's endpoint """
         resp = self._gw.delete( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
@@ -149,6 +162,8 @@ class ConfigElement( object ):
         * `id`: identifier of configuration element to which connection is added
         * `relation_id`: identifier of configuration element to add as new connection
         * `meta`: JSON API meta data for request, usually not required but see ICAP connections for mappings, e.g. https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#add-icap-request-client-view
+
+        Returns: True on success, False otherwise
         """
         if self.RELATIONSHIPS == None:
             raise exception.AirlockNotSupportedError()
@@ -171,6 +186,8 @@ class ConfigElement( object ):
         * `connection`: type of connection to remove
         * `id`: identifier of configuration element from which connection is removed
         * `relation_id`: identifier of configuration element to disconnect
+
+        Returns: True on success, False otherwise
         """
         if self.RELATIONSHIPS == None:
             raise exception.AirlockNotSupportedError()
@@ -191,6 +208,11 @@ class ConfigElement( object ):
         * `id`: identifier of configuration element, retrieve all if no specified
         * `subpath`: configuration element specific path under REST API endpoint
         * `expect`: list of expected HTTP response codes, other values result in exceptions
+
+        Returns:
+        * REST API response element `data` as dict or list of dicts
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
         """
         if id:
             resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", expect=expect )
@@ -214,6 +236,11 @@ class ConfigElement( object ):
         * `subpath`: configuration element specific path under REST API endpoint
         * `data`: dict with correct structure, depending on class. Please refer to Airlock Gateway REST API documentation (https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html) for details. Will be converted to JSON.
         * `expect`: list of expected HTTP response codes, other values result in exceptions
+
+        Returns:
+        * REST API response element `data` as dict or list of dicts
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
         """
         if id:
             resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
@@ -239,6 +266,11 @@ class ConfigElement( object ):
         * `subpath`: configuration element specific path under REST API endpoint
         * `data`: dict with correct structure, depending on class. Please refer to Airlock Gateway REST API documentation (https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html) for details. Will be converted to JSON.
         * `expect`: list of expected HTTP response codes, other values result in exceptions
+
+        Returns:
+        * REST API response element `data` as dict or list of dicts
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
         """
         resp = self._gw.patch( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
         if resp.status_code == 404:
@@ -261,6 +293,11 @@ class ConfigElement( object ):
         * `subpath`: configuration element specific path under REST API endpoint
         * `data`: dict with correct structure, depending on class. Please refer to Airlock Gateway REST API documentation (https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html) for details. Will be converted to JSON.
         * `expect`: list of expected HTTP response codes, other values result in exceptions
+
+        Returns:
+        * REST API response element `data` as dict or list of dicts
+        * may also be empty dict if call does not return any data (response code 204)
+        * None if object not found
         """
         if id:
             resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
