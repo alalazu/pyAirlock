@@ -265,6 +265,19 @@ class GW( object ):
             return True
         return False
     
+    def isActive( self ) -> bool:
+        """
+        Check if Airlock Gateway is active node in an active/passive cluster
+        
+        Returns:
+        * True if node is active or if node is not in an active/passive cluster
+        * False if node is the passive partner
+        """
+        if self.failoverState() in ["active", "standalone"]:
+            return True
+        else:
+            return False
+
     def connect( self ) -> bool:
         """
         Establish session with Airlock Gateway.
@@ -309,6 +322,37 @@ class GW( object ):
             self._log.info( "Disconnected from '%s'" % (self._name,) )
         self.session = None
     
+    def status( self ) -> dict:
+        """
+        Retrieve node status
+
+        Returns: dict according to [API documentation](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#get-node-status)
+        """
+        try:
+            resp = self.get( "/system/status/node", expect=[200] )
+        except exception.AirlockCommunicationError:
+            pass
+        try:
+            return resp.json()['data']
+        except KeyError:
+            raise exception.AirlockDataError()
+
+    def failoverState( self ):
+        """
+        Retrieve failover state
+        
+        Returns:
+        * active
+        * passive
+        * standalone
+        * offline
+        """
+        status = self.status()
+        try:
+            return status['attributes']['failoverState']
+        except KeyError:
+            raise exception.AirlockDataError()
+
     def keepalive( self ):
         """
         A session to an Airlock Gateway times out after about 10 minutes of inactivity.
