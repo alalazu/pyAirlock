@@ -172,8 +172,8 @@ class ConfigElement( object ):
         data = {"data": [{'type': self._document_type( connection ), 'id': relation_id}]}
         if meta:
             data['meta'] = meta
-        resp = self.patch( f"relationships/{connection}s", id, data=data, expect=[204,404] )
-        if not resp:
+        resp = self.patch( id, f"relationships/{connection}s", data=data, expect=[204,404] )
+        if resp == None:
             return False
         return True
 
@@ -194,7 +194,7 @@ class ConfigElement( object ):
         if connection not in self.RELATIONSHIPS:
             raise exception.AirlockInternalError()
         data = {"data": [{'type': self._document_type( connection ), 'id': relation_id}]}
-        resp = self.delete( f"relationships/{connection}s", id, data=data, expect=[204,404] )
+        resp = self.delete( id, f"relationships/{connection}s", data=data, expect=[204,404] )
         if not resp:
             return False
         return True
