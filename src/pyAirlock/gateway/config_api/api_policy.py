@@ -30,6 +30,10 @@ class APIPolicy( element.ConfigElement ):
     """
     CRUD and connection management REST API for API policies
     """
-    ELEMENT_PATH = "api-policy-service"
-    RELATIONSHIPS = ["mapping"]
+    ELEMENT_PATH = "api-policy-services"
+    RELATIONSHIPS = ["mappings"]
+    RELATIONTYPES = ["mapping"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "api-policy-service")]
     

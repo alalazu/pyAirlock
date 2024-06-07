@@ -30,6 +30,10 @@ class Certificate( element.ConfigElement ):
     """
     CRUD and connection management REST API for TLS certificates
     """
-    ELEMENT_PATH = "ssl-certificate"
-    RELATIONSHIPS = ["virtual-host", "back-end-group", "json-web-key-sets/remote"]
-   
+    ELEMENT_PATH = "ssl-certificates"
+    RELATIONSHIPS = ["virtual-hosts", "back-end-groups", "json-web-key-sets/remotes"]
+    RELATIONTYPES = ["virtual-host", "back-end-group", "remote-json-web-key-set"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "ssl-certificate")]
+    

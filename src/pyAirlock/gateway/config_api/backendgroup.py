@@ -31,8 +31,12 @@ class BackendGroup( element.ConfigElement ):
     CRUD and connection management REST API for backend groups
     """
 
-    ELEMENT_PATH = "back-end-group"
-    RELATIONSHIPS = ["mapping", "kerberos-environment", "client-certificate"]
+    ELEMENT_PATH = "back-end-groups"
+    RELATIONSHIPS = ["mappings", "kerberos-environments", "client-certificates"]
+    RELATIONTYPES = ["mapping", "kerberos-environment", "ssl-certificate"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "back-end-group")]
 
     def mode( self, id: int, data: dict ) -> bool:
         """

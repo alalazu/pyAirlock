@@ -30,6 +30,6 @@ class Host( element.ConfigElement ):
     """
     CRUD and connection management REST API for host entries
     """
-    ELEMENT_PATH = "host"
+    ELEMENT_PATH = "hosts"
     RELATIONSHIPS = []
     

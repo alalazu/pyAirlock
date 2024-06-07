@@ -43,7 +43,7 @@ class Configuration( element.ConfigElement ):
     * `load`: load a specific configuration by id
     """
     
-    ELEMENT_PATH = "configuration"
+    ELEMENT_PATH = "configurations"
 
     def __init__( self, name, gw, run_info ):
         """

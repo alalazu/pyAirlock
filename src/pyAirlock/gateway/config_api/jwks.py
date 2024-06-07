@@ -30,13 +30,20 @@ class LocalJWKS( element.ConfigElement ):
     """
     CRUD and connection management REST API for local JWKS specifications
     """
-    ELEMENT_PATH = "json-web-key-sets/local"
-    RELATIONSHIPS = ["mapping"]
+    ELEMENT_PATH = "json-web-key-sets/locals"
+    RELATIONSHIPS = ["mappings"]
+    RELATIONTYPES = ["mapping"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "local-json-web-key-set")]
    
 class RemoteJWKS( element.ConfigElement ):
     """
     CRUD and connection management REST API for remote JWKS providers
     """
-    ELEMENT_PATH = "json-web-key-sets/remote"
-    RELATIONSHIPS = ["mapping", "client-certificate"]
+    ELEMENT_PATH = "json-web-key-sets/remotes"
+    RELATIONSHIPS = ["mappings", "client-certificates"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "remote-json-web-key-set")]
    

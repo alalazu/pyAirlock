@@ -29,8 +29,12 @@ class OpenAPI( element.ConfigElement ):
     """
     CRUD and connection management REST API for OpenAPI specifications
     """
-    ELEMENT_PATH = "api-security/openapi-document"
-    RELATIONSHIPS = ["mapping"]
+    ELEMENT_PATH = "api-security/openapi-documents"
+    RELATIONSHIPS = ["mappings"]
+    RELATIONTYPES = ["mapping"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "openapi-document")]
     
     def download( self, id: int ) -> str:
         """
@@ -39,7 +43,7 @@ class OpenAPI( element.ConfigElement ):
         Parameter:
         * `id`: identifier of OpenAPI document
         """
-        resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}/content", expect=[200], accept="application/octet-stream" )
+        resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}/{id}/content", expect=[200], accept="application/octet-stream" )
         return resp.content
     
     def upload( self, id: int, data ) -> bool:
@@ -49,6 +53,6 @@ class OpenAPI( element.ConfigElement ):
         Parameter:
         * `id`: identifier of OpenAPI document
         """
-        resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}s/{id}/content", data=data, expect=[204], content="application/octet-stream" )
+        resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}/{id}/content", data=data, expect=[204], content="application/octet-stream" )
         return True
     

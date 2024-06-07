@@ -25,16 +25,17 @@ it works, e.g. the requirements for loading and activating a configuration.
 
 from typing import Union
 
-from ...common import exception
-from ...common import log
+from ...common import exception, log, lookup
 
+LOOKUP_TABLENAME = "path2typename"
 
 class ConfigElement( object ):
     """
     Base class for CRUD and connection management REST API of all configuration elements
     """
-    ELEMENT_PATH = ""
     RELATIONSHIPS = None
+    RELATIONTYPES = []
+    OPERATIONS = "CRUDL"            # Create, Read, Update, Delete, Link
     
     def __init__( self, name, gw, run_info ):
         """
@@ -48,6 +49,8 @@ class ConfigElement( object ):
         self._gw = gw
         self._run_info = run_info
         self._log = log.Log( self.__module__, self._run_info )
+        for item in self._registerLookup():
+            lookup.register( LOOKUP_TABLENAME, item[0], item[1] )
     
     def create( self, data: dict ) -> dict:
         """
@@ -59,6 +62,9 @@ class ConfigElement( object ):
 
         Returns: REST API response element `data` as dict
         """
+        if not "C" in self.OPERATIONS:
+            print( self, data )
+            raise exception.AirlockInvalidOperation()
         if 'relationships' in data:
             raise exception.AirlockDataConnectionError()
         data_type = self._document_type( self.ELEMENT_PATH )
@@ -67,7 +73,7 @@ class ConfigElement( object ):
                 raise exception.AirlockDataTypeError( data_type )
         except KeyError:
             raise exception.AirlockInvalidDataFormatError()
-        resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}s", data={'data': data}, expect=[201] )
+        resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}", data={'data': data}, expect=[201] )
         try:
             return resp.json()['data']
         except KeyError:
@@ -86,13 +92,15 @@ class ConfigElement( object ):
         * may also be empty dict if call does not return any data (response code 204)
         * None if object not found
         """
+        if not "R" in self.OPERATIONS:
+            raise exception.AirlockInvalidOperation()
         if id:
-            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}", expect=[200,404] )
+            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}/{id}", expect=[200,404] )
             if resp.status_code == 404:
                 self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
                 return None
         else:
-            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s", expect=[200,404] )
+            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}", expect=[200,404] )
             if resp.status_code == 404:
                 return {}
         try:
@@ -114,6 +122,8 @@ class ConfigElement( object ):
         * may also be empty dict if call does not return any data (response code 204)
         * None if object not found
         """
+        if not "U" in self.OPERATIONS:
+            raise exception.AirlockInvalidOperation()
         try:
             del data['relationships']
         except KeyError:
@@ -124,7 +134,12 @@ class ConfigElement( object ):
                 raise exception.AirlockDataTypeError( data_type )
         except KeyError:
             raise exception.AirlockInvalidDataFormatError()
-        resp = self._gw.patch( f"/configuration/{self.ELEMENT_PATH}s/{id}", data={'data': data}, expect=[200,404] )
+        if "C" in self.OPERATIONS:
+            # if element can be created, we have an id
+            path = f"/configuration/{self.ELEMENT_PATH}/{id}"
+        else:
+            path = f"/configuration/{self.ELEMENT_PATH}"
+        resp = self._gw.patch( path, data={'data': data}, expect=[200,404] )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {data_type}: {id}" )
             return None
@@ -146,7 +161,14 @@ class ConfigElement( object ):
 
         Returns: True on success, False otherwise
         """
-        resp = self._gw.delete( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
+        if not "D" in self.OPERATIONS:
+            raise exception.AirlockInvalidOperation()
+        if "C" in self.OPERATIONS:
+            # if element can be created, we have an id
+            path = f"/configuration/{self.ELEMENT_PATH}/{id}"
+        else:
+            path = f"/configuration/{self.ELEMENT_PATH}"
+        resp = self._gw.delete( f"{path}{self._subpath( subpath )}", data=data, expect=expect )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
             return False
@@ -165,14 +187,19 @@ class ConfigElement( object ):
 
         Returns: True on success, False otherwise
         """
+        if not "L" in self.OPERATIONS:
+            raise exception.AirlockInvalidOperation()
         if self.RELATIONSHIPS == None:
             raise exception.AirlockNotSupportedError()
-        if connection not in self.RELATIONSHIPS:
+        try:
+            idx = self.RELATIONTYPES.index( connection )
+        except ValueError:
             raise exception.AirlockInternalError()
-        data = {"data": [{'type': self._document_type( connection ), 'id': relation_id}]}
+        subpath = self.RELATIONSHIPS[idx]
+        data = {"data": [{'type': connection, 'id': relation_id}]}
         if meta:
             data['meta'] = meta
-        resp = self.patch( id, f"relationships/{connection}s", data=data, expect=[204,404] )
+        resp = self.patch( id, f"relationships/{subpath}", data=data, expect=[204,404] )
         if resp == None:
             return False
         return True
@@ -189,12 +216,17 @@ class ConfigElement( object ):
 
         Returns: True on success, False otherwise
         """
+        if not "L" in self.OPERATIONS:
+            raise exception.AirlockInvalidOperation()
         if self.RELATIONSHIPS == None:
             raise exception.AirlockNotSupportedError()
-        if connection not in self.RELATIONSHIPS:
+        try:
+            idx = self.RELATIONTYPES.index( connection )
+        except ValueError:
             raise exception.AirlockInternalError()
-        data = {"data": [{'type': self._document_type( connection ), 'id': relation_id}]}
-        resp = self.delete( id, f"relationships/{connection}s", data=data, expect=[204,404] )
+        subpath = self.RELATIONSHIPS[idx]
+        data = {"data": [{'type': connection, 'id': relation_id}]}
+        resp = self.delete( id, f"relationships/{subpath}", data=data, expect=[204,404] )
         if not resp:
             return False
         return True
@@ -215,9 +247,9 @@ class ConfigElement( object ):
         * None if object not found
         """
         if id:
-            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", expect=expect )
+            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}/{id}{self._subpath( subpath )}", expect=expect )
         else:
-            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s{self._subpath( subpath )}", expect=expect )
+            resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}{self._subpath( subpath )}", expect=expect )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
             return None
@@ -243,9 +275,9 @@ class ConfigElement( object ):
         * None if object not found
         """
         if id:
-            resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
+            resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}/{id}{self._subpath( subpath )}", data=data, expect=expect )
         else:
-            resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}s{self._subpath( subpath )}", data=data, expect=expect )
+            resp = self._gw.post( f"/configuration/{self.ELEMENT_PATH}{self._subpath( subpath )}", data=data, expect=expect )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
             return None
@@ -272,7 +304,7 @@ class ConfigElement( object ):
         * may also be empty dict if call does not return any data (response code 204)
         * None if object not found
         """
-        resp = self._gw.patch( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
+        resp = self._gw.patch( f"/configuration/{self.ELEMENT_PATH}/{id}{self._subpath( subpath )}", data=data, expect=expect )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
             return None
@@ -300,9 +332,9 @@ class ConfigElement( object ):
         * None if object not found
         """
         if id:
-            resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}s/{id}{self._subpath( subpath )}", data=data, expect=expect )
+            resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}/{id}{self._subpath( subpath )}", data=data, expect=expect )
         else:
-            resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}s{self._subpath( subpath )}", data=data, expect=expect )
+            resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}{self._subpath( subpath )}", data=data, expect=expect )
         if resp.status_code == 404:
             self._log.verbose( f"{self._name}: No such {self._document_type( self.ELEMENT_PATH )}: {id}" )
             return None
@@ -313,6 +345,9 @@ class ConfigElement( object ):
         except KeyError:
             raise exception.AirlockDataError()
     
+    def _registerLookup( self ):
+        return []
+    
     def _subpath( self, subpath: str ) -> str:
         if subpath:
             return f"/{subpath}"
@@ -320,23 +355,28 @@ class ConfigElement( object ):
             return ""
     
     def _document_type( self, subpath: str ) -> str:
-        if subpath == "json-web-key-sets/remote":
+        typename = lookup.get( LOOKUP_TABLENAME, subpath )
+        return typename if typename else subpath
+    
+        if subpath == "json-web-key-sets/remotes":
             return "remote-json-web-key-set"
-        elif subpath == "json-web-key-sets/local":
+        elif subpath == "json-web-key-sets/locals":
             return "local-json-web-key-set"
         elif subpath[:11] == "ip-address-":
             return "ip-address-list"
-        elif subpath == "bot-management-source-ip-address-whitelist":
+        elif subpath in ["bot-management-source-ip-address-whitelists", "session-dos-mitigation-source-ip-whitelists"]:
             return "ip-address-list"
         elif subpath[:9] == "mappings-":
             return "mapping"
-        elif subpath == "template":
+        elif subpath == "templates":
             return "mapping-template"
-        elif subpath == "client-certificate":
+        elif subpath == "client-certificates":
             return "ssl-certificate"
-        elif subpath == "api-security/openapi-document":
+        elif subpath == "api-security/openapi-documents":
             return "openapi-document"
-        elif subpath == "api-security/graphql-document":
+        elif subpath == "api-security/graphql-documents":
             return "graphql-document"
+        elif subpath in ["training-data-collection-exclusions", "anomaly-detection-exclusions", "response-rule-exceptions"]:
+            return "anomaly-shield-traffic-matcher"
         return subpath
     

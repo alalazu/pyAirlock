@@ -30,8 +30,12 @@ class VirtualHost( element.ConfigElement ):
     """
     CRUD and connection management REST API for virtual hosts
     """
-    ELEMENT_PATH = "virtual-host"
-    RELATIONSHIPS = ["mapping", "ssl-certificate"]
+    ELEMENT_PATH = "virtual-hosts"
+    RELATIONSHIPS = ["mappings", "ssl-certificates"]
+    RELATIONTYPES = ["mapping", "ssl-certificate"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "virtual-host")]
 
     def maintenance_page( self, id: int, enable: bool=False ) -> bool:
         """

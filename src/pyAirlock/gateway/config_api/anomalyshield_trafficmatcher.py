@@ -17,23 +17,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """
-Handle Kerberos Environment
+Handle Anomaly Shield Traffic Matcher
 
-Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#kerberos-environments) documentation to understand how
-it works, e.g. the requirements for loading and activating a configuration.
+Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#api-policy-service)
+documentation to understand how it works, e.g. the requirements for loading and activating a configuration.
 """
 
 from . import element
 
 
-class Kerberos( element.ConfigElement ):
+class AnomalyShieldTrafficMatcher( element.ConfigElement ):
     """
-    CRUD and connection management REST API for Kerberos environments
+    CRUD and connection management REST API for Anomaly Shield traffic matchers
     """
-    ELEMENT_PATH = "kerberos-environments"
-    RELATIONSHIPS = ["back-end-groups"]
-    RELATIONTYPES = ["back-end-group"]
+    ELEMENT_PATH = "anomaly-shield-traffic-matchers"
+    RELATIONSHIPS = ["ip-address-lists"]
+    RELATIONTYPES = ["ip-address-list"]
     
     def _registerLookup( self ):
-        return [(self.ELEMENT_PATH, "kerberos-environment")]
+        return [(self.ELEMENT_PATH, "anomaly-shield-traffic-matchers")]
     

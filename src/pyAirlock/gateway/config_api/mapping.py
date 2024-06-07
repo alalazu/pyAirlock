@@ -30,15 +30,25 @@ class Mapping( element.ConfigElement ):
     """
     CRUD and connection management REST API for mappings
     """
-    ELEMENT_PATH = "mapping"
-    RELATIONSHIPS = ["virtual-host", "back-end-group", "openapi-document", "graphql-document",
-                     "json-web-key-sets/remote", "json-web-key-sets/local",
-                     "ip-address-whitelist", "ip-address-blacklist", "ip-address-blacklist-exceptions",
-                     "bot-management-source-ip-address-whitelist",
+    ELEMENT_PATH = "mappings"
+    RELATIONSHIPS = ["virtual-hosts", "back-end-groups", "openapi-documents", "graphql-documents",
+                     "json-web-key-sets/remotes", "json-web-key-sets/locals",
+                     "ip-address-whitelists", "ip-address-blacklists", "ip-address-blacklist-exceptions",
+                     "bot-management-source-ip-address-whitelists",
+                     "icap-request-client-views", "icap-request-backend-views",
+                     "icap-response-client-views", "icap-response-backend-views",
+                     "templates", "api-policy-services", "anomaly-shield-applications"]
+    RELATIONTYPES = ["virtual-host", "back-end-group", "openapi-document", "graphql-document",
+                     "remote-json-web-key-set", "local-json-web-key-set",
+                     "ip-address-list", "ip-address-list", "ip-address-list",
+                     "ip-address-list",
                      "icap-request-client-view", "icap-request-backend-view",
                      "icap-response-client-view", "icap-response-backend-view",
-                     "template", "api-policy-service", "anomaly-shield-application"]
-
+                     "mapping-template", "api-policy-service", "anomaly-shield-application"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "mapping")]
+    
     def maintenance_page( self, id: int, enable: bool=False ) -> bool:
         """
         Enable/disable maintenance page for mapping

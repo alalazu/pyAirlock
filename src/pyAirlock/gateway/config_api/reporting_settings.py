@@ -17,23 +17,20 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """
-Handle Kerberos Environment
+Handle Reporting Settings
 
-Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#kerberos-environments) documentation to understand how
+Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#host) documentation to understand how
 it works, e.g. the requirements for loading and activating a configuration.
 """
 
 from . import element
 
 
-class Kerberos( element.ConfigElement ):
+class ReportingSettings( element.ConfigElement ):
     """
-    CRUD and connection management REST API for Kerberos environments
+    REST API to handle reporting settings
     """
-    ELEMENT_PATH = "kerberos-environments"
-    RELATIONSHIPS = ["back-end-groups"]
-    RELATIONTYPES = ["back-end-group"]
-    
-    def _registerLookup( self ):
-        return [(self.ELEMENT_PATH, "kerberos-environment")]
+    ELEMENT_PATH = "reporting"
+    RELATIONSHIPS = []
+    OPERATIONS = "RU"
     

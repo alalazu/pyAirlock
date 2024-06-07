@@ -32,8 +32,12 @@ class Node( element.ConfigElement ):
     """
     CRUD and connection management REST API for Airlock Gateway cluster nodes
     """
-    ELEMENT_PATH = "node"
-    RELATIONSHIPS = ["ssl-certificate"]
+    ELEMENT_PATH = "nodes"
+    RELATIONSHIPS = ["ssl-certificates"]
+    RELATIONTYPES = ["ssl-certificate"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "node")]
     
     def read( self, id: int=None ) -> Union[dict, list[dict], None]:
         """

@@ -17,22 +17,40 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """
-Handle ICAP
+Handle Host
 
-Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#icap-environments) documentation to understand how
+Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#host) documentation to understand how
 it works, e.g. the requirements for loading and activating a configuration.
 """
 
 from . import element
 
 
-class ICAP( element.ConfigElement ):
+class RouteIPV4Destination( element.ConfigElement ):
     """
-    CRUD and connection management REST API for ICAP services
+    CRUD and connection management REST API for IPv4 destination route entries
     """
-    ELEMENT_PATH = "icap-environments"
+    ELEMENT_PATH = "routes/ipv4/destination"
     RELATIONSHIPS = []
     
-    def _registerLookup( self ):
-        return [(self.ELEMENT_PATH, "icap-environment")]
+class RouteIPV6Destination( element.ConfigElement ):
+    """
+    CRUD and connection management REST API for IPv6 destination route entries
+    """
+    ELEMENT_PATH = "routes/ipv6/destination"
+    RELATIONSHIPS = []
+    
+class RouteIPV4Source( element.ConfigElement ):
+    """
+    CRUD and connection management REST API for IPv4 source route entries
+    """
+    ELEMENT_PATH = "routes/ipv4/source"
+    RELATIONSHIPS = []
+    
+class RouteIPV6Source( element.ConfigElement ):
+    """
+    CRUD and connection management REST API for IPv6 source route entries
+    """
+    ELEMENT_PATH = "routes/ipv6/source"
+    RELATIONSHIPS = []
     

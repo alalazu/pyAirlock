@@ -65,6 +65,9 @@ class AirlockFileWriteError( AirlockFileSystemError ):
 
 
 # rest api requests
+class AirlockInvalidOperation( AirlockError ):
+    """ Invalid operation on config element, e.g. trying to create session settings """
+
 class AirlockRequestError( AirlockError ):
     """ Invalid request """
 

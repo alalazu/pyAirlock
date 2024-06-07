@@ -30,8 +30,12 @@ class GraphQL( element.ConfigElement ):
     """
     CRUD and connection management REST API for GraphQL API specifications
     """
-    ELEMENT_PATH = "api-security/graphql-document"
-    RELATIONSHIPS = ["mapping"]
+    ELEMENT_PATH = "api-security/graphql-documents"
+    RELATIONSHIPS = ["mappings"]
+    RELATIONTYPES = ["mapping"]
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "graphql-document")]
     
     def download( self, id: int ) -> str:
         """
@@ -40,7 +44,7 @@ class GraphQL( element.ConfigElement ):
         Parameter:
         * `id`: identifier of GraphQL document
         """
-        resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}s/{id}/content", expect=[200], accept="application/octet-stream" )
+        resp = self._gw.get( f"/configuration/{self.ELEMENT_PATH}/{id}/content", expect=[200], accept="application/octet-stream" )
         return resp.content
     
     def upload( self, id: int, data ) -> bool:
@@ -50,6 +54,6 @@ class GraphQL( element.ConfigElement ):
         Parameter:
         * `id`: identifier of GraphQL document
         """
-        resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}s/{id}/content", data=data, expect=[204], content="application/octet-stream" )
+        resp = self._gw.put( f"/configuration/{self.ELEMENT_PATH}/{id}/content", data=data, expect=[204], content="application/octet-stream" )
         return True
     

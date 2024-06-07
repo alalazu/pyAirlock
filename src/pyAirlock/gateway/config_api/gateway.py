@@ -37,19 +37,31 @@ from requests.adapters import HTTPAdapter, Retry
 from ...common import exception
 from ...common import log, utils
 from .api_policy import APIPolicy
+from .anomalyshield_application import AnomalyShieldApplication
+from .anomalyshield_rule import AnomalyShieldRule
+from .anomalyshield_settings import AnomalyShieldSettings
+from .anomalyshield_trafficmatcher import AnomalyShieldTrafficMatcher
+from .anomalyshield_trigger import AnomalyShieldTrigger
 from .backendgroup import BackendGroup
 from .certificate import Certificate
 from .configuration import Configuration
 from .graphql import GraphQL
-from .icap import ICAP
 from .host import Host
+from .icap import ICAP
 from .iplist import IPList
 from .jwks import LocalJWKS, RemoteJWKS
 from .kerberos import Kerberos
+from .license import License
+from .log_settings import LogSettings
 from .mapping import Mapping
 from .network_endpoint import NetworkEndpoint
+from .network_services_settings import NetworkServicesSettings
 from .node import Node
 from .openapi import OpenAPI
+from .reporting_settings import ReportingSettings
+from .route import RouteIPV4Destination, RouteIPV6Destination, RouteIPV4Source, RouteIPV6Source
+from .route_settings import RouteSettings
+from .session_settings import SessionSettings
 from .vhost import VirtualHost
 
 
@@ -89,6 +101,14 @@ class GW( object ):
         self._log = log.Log( self.__module__, self._run_info )
         #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.api_policy.APIPolicy` configuration element
         self.api_policy = APIPolicy( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.anomalyshield_application.AnomalyShieldApplication` configuration element
+        self.anomalyshield_application = AnomalyShieldApplication( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.anomalyshield_rule.AnomalyShieldRule` configuration element
+        self.anomalyshield_rule = AnomalyShieldRule( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.anomalyshield_trafficmatcher.AnomalyShieldTrafficMatcher` configuration element
+        self.anomalyshield_trafficmatcher = AnomalyShieldTrafficMatcher( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.anomalyshield_trigger.AnomalyShieldTrigger` configuration element
+        self.anomalyshield_trigger = AnomalyShieldTrigger( self._name, self, self._run_info )
         #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.backendgroup.BackendGroup` configuration element
         self.backendgroup = BackendGroup( self._name, self, self._run_info )
         #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.certificate.Certificate` configuration element
@@ -117,8 +137,31 @@ class GW( object ):
         self.node = Node( self._name, self, self._run_info )
         #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.openapi.OpenAPI` configuration element
         self.openapi = OpenAPI( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.route.RouteIPV4Destination` configuration element
+        self.routes_ipv4_destination = RouteIPV4Destination( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.route.RouteIPV6Destination` configuration element
+        self.routes_ipv6_destination = RouteIPV6Destination( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.route.RouteIPV4Source` configuration element
+        self.routes_ipv4_source = RouteIPV4Source( self._name, self, self._run_info )
+        #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.route.RouteIPV6Source` configuration element
+        self.routes_ipv6_source = RouteIPV6Source( self._name, self, self._run_info )
         #: CRUD and connection management REST API for `pyAirlock.gateway.config_api.vhost.VirtualHost` configuration element
         self.vhost = VirtualHost( self._name, self, self._run_info )
+
+        #: Settings for `pyAirlock.gateway.config_api.anomalyshield_settings.AnomalyShieldSettings`
+        self.settings_anomalyshield = AnomalyShieldSettings( self._name, self, self._run_info )
+        #: Settings for `pyAirlock.gateway.config_api.log_settings_settings.LogSettings`
+        self.settings_log = LogSettings( self._name, self, self._run_info )
+        #: Settings for `pyAirlock.gateway.config_api.network_services_settings.NetworkServicesSettings`
+        self.settings_network_services = NetworkServicesSettings( self._name, self, self._run_info )
+        #: Settings for `pyAirlock.gateway.config_api.reporting_settings.ReportingSettings`
+        self.settings_reporting = ReportingSettings( self._name, self, self._run_info )
+        #: Settings for `pyAirlock.gateway.config_api.route_settings.RouteSettings`
+        self.settings_route = RouteSettings( self._name, self, self._run_info )
+        #: Settings for `pyAirlock.gateway.config_api.session_settings.SessionSettings`
+        self.settings_session = SessionSettings( self._name, self, self._run_info )
+        #: Settings for `pyAirlock.gateway.config_api.license.License`
+        self.license = License( self._name, self, self._run_info )
     
     def getName( self ) -> str:
         """ Return short name. """
@@ -157,6 +200,10 @@ class GW( object ):
         
         Possible values for `type_name` are:
         * api-policy-service
+        * anomaly-shield-application
+        * anomaly-shield-rule
+        * anomaly-shield-traffi-matcher
+        * anomaly-shield-trigger
         * back-end-group
         * ssl-certificate
         * graphql-document
@@ -171,9 +218,25 @@ class GW( object ):
         * node
         * openapi-document
         * virtual-host
+
+        * anomaly-shield
+        * license
+        * log
+        * network-services
+        * reporting
+        * route-default
+        * session
         """
         if type_name == "api-policy-service":
             return self.api_policy
+        elif type_name == "anomaly-shield-application":
+            return self.anomalyshield_application
+        elif type_name == "anomaly-shield-rule":
+            return self.anomalyshield_rule
+        elif type_name == "anomaly-shield-traffic-matcher":
+            return self.anomalyshield_trafficmatcher
+        elif type_name == "anomaly-shield-trigger":
+            return self.anomalyshield_trigger
         elif type_name == "back-end-group":
             return self.backendgroup
         elif type_name == "ssl-certificate":
@@ -183,9 +246,9 @@ class GW( object ):
         elif type_name == "host":
             return self.host
         elif type_name == "icap-environment":
-            return self.i4
+            return self.icap
         elif type_name == "ip-address-list":
-            return self.i4
+            return self.icap
         elif type_name == "local-json-web-key-sets":
             return self.jwks_local
         elif type_name == "remote-json-web-key-sets":
@@ -202,6 +265,20 @@ class GW( object ):
             return self.openapi
         elif type_name == "virtual-host":
             return self.vhost
+        elif type_name == "anomaly-shield":
+            return self.settings_anomalyshield
+        elif type_name == "license-response":
+            return self.license
+        elif type_name == "log":
+            return self.settings_log
+        elif type_name == "network-services":
+            return self.settings_network_services
+        elif type_name == "reporting":
+            return self.settings_reporting
+        elif type_name == "route-default":
+            return self.settings_route
+        elif type_name == "session":
+            return self.settings_session
         return None
 
     def setVerbosity( self, logLevel: int=None ) -> int:
