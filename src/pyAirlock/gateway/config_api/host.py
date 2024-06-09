@@ -33,3 +33,6 @@ class Host( element.ConfigElement ):
     ELEMENT_PATH = "hosts"
     RELATIONSHIPS = []
     
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "host")]
+    

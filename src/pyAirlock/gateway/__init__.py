@@ -474,7 +474,7 @@ class Session( object ):
                                     headers=self._headers( accept=accept, content=content ),
                                     timeout=self._timeout if timeout == None else timeout,
                                     verify=self._verify(),
-                                    data=json.dumps( data ))
+                                    data=self._jsonify( data ))
             return self._validateResponse( resp, path, expect )
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
@@ -501,7 +501,7 @@ class Session( object ):
                                     headers=self._headers( accept=accept, content=content ),
                                     timeout=self._timeout if timeout == None else timeout,
                                     verify=self._verify(),
-                                    data=json.dumps( data ) )
+                                    data=self._jsonify( data ) )
             return self._validateResponse( resp, path, expect )
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
@@ -528,7 +528,7 @@ class Session( object ):
                                     headers=self._headers( accept=accept, content=content ),
                                     timeout=self._timeout if timeout == None else timeout,
                                     verify=self._verify(),
-                                    data=json.dumps( data ) )
+                                    data=self._jsonify( data ) )
             return self._validateResponse( resp, path, expect )
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
@@ -554,7 +554,7 @@ class Session( object ):
                                         headers=self._headers( accept=accept ),
                                         timeout=self._timeout if timeout == None else timeout,
                                         verify=self._verify(),
-                                        data=json.dumps( data ) )
+                                        data=self._jsonify( data ) )
             return self._validateResponse( resp, path, expect )
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ReadTimeout, urllib3.exceptions.MaxRetryError) as e:
             raise exception.AirlockCommunicationError
@@ -635,6 +635,12 @@ class Session( object ):
         if self._tlsVerify == False:
             verify = False
         return verify
+    
+    def _jsonify( self, data ):
+        try:
+            return json.dumps( data )
+        except TypeError:
+            return data
     
     def _validateResponse( self, response, path: str, expect: list[int] ) -> requests.Response:
         """
