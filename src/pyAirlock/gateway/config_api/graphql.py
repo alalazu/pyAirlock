@@ -31,8 +31,8 @@ class GraphQL( element.ConfigElement ):
     CRUD and connection management REST API for GraphQL API specifications
     """
     ELEMENT_PATH = "api-security/graphql-documents"
-    RELATIONSHIPS = ["mappings"]
-    RELATIONTYPES = ["mapping"]
+    RELATIONPATH = ["mappings"]
+    RELATIONTYPE = ["mapping"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "graphql-document")]

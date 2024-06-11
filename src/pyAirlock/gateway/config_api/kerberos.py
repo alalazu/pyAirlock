@@ -31,8 +31,9 @@ class Kerberos( element.ConfigElement ):
     CRUD and connection management REST API for Kerberos environments
     """
     ELEMENT_PATH = "kerberos-environments"
-    RELATIONSHIPS = ["back-end-groups"]
-    RELATIONTYPES = ["back-end-group"]
+    RELATIONPATH = ["back-end-groups"]
+    RELATIONTYPE = ["back-end-group"]
+    RELATIONDATA = ["back-end-group"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "kerberos-environment")]

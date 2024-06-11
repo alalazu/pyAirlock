@@ -83,6 +83,9 @@ class AirlockInvalidDataFormatError( AirlockRequestError ):
 class AirlockNotSupportedError( AirlockRequestError ):
     """ Operation not supported """
 
+class AirlockInvalidRelationshipTypeError( AirlockRequestError ):
+    """ Invalid relationship type for configuration element """
+
 
 # rest api response
 class AirlockResponseError( AirlockError ):

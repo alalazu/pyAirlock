@@ -34,7 +34,7 @@ class License( element.ConfigElement ):
     REST API to handle Airlock Gateway license
     """
     ELEMENT_PATH = "license"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     OPERATIONS = "RUD"
     
     def _registerLookup( self ):

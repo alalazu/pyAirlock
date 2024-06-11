@@ -31,7 +31,7 @@ class SessionSettings( element.ConfigElement ):
     REST API to handle session settings
     """
     ELEMENT_PATH = "session"
-    RELATIONSHIPS = ["session-dos-mitigation-source-ip-whitelist"]
-    RELATIONTYPES = ["ip-address-list"]
+    RELATIONPATH = ["session-dos-mitigation-source-ip-whitelist"]
+    RELATIONTYPE = ["ip-address-list"]
     OPERATIONS = "RUL"
     

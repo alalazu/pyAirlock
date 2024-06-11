@@ -31,7 +31,7 @@ class Host( element.ConfigElement ):
     CRUD and connection management REST API for host entries
     """
     ELEMENT_PATH = "hosts"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "host")]

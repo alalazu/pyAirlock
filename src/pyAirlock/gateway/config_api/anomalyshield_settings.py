@@ -31,6 +31,6 @@ class AnomalyShieldSettings( element.ConfigElement ):
     REST API to handle Anomaly Shield settings
     """
     ELEMENT_PATH = "anomaly-shield"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     OPERATIONS = "RU"
     

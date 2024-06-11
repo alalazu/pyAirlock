@@ -27,15 +27,20 @@ from typing import Union
 
 from ...common import exception, log, lookup
 
-LOOKUP_TABLENAME = "path2typename"
-
 class ConfigElement( object ):
     """
     Base class for CRUD and connection management REST API of all configuration elements
     """
-    RELATIONSHIPS = None
-    RELATIONTYPES = []
-    OPERATIONS = "CRUDL"            # Create, Read, Update, Delete, Link
+    # path under /configuration
+    ELEMENTPATH = ""
+    # subpath after /configuration/.../relationships
+    RELATIONPATH = None
+    # config element type_name of the referenced resource
+    RELATIONTYPE = []
+    # key in config element data for relationships
+    RELATIONDATA = None
+    # Create, Read, Update, Delete, Link
+    OPERATIONS = "CRUDL"
     
     def __init__( self, name, gw, run_info ):
         """
@@ -50,7 +55,28 @@ class ConfigElement( object ):
         self._run_info = run_info
         self._log = log.Log( self.__module__, self._run_info )
         for item in self._registerLookup():
-            lookup.register( LOOKUP_TABLENAME, item[0], item[1] )
+            lookup.register( lookup.PATH2TYPENAME, item[0], item[1] )
+        lst_key = self.RELATIONDATA if self.RELATIONDATA else self.RELATIONPATH
+        if lst_key:
+            lst_typ = self.RELATIONTYPE
+            for idx in range( len( lst_key )):
+                key = lst_key[idx]
+                if key == "":
+                    continue
+                try:
+                    typ = lst_typ[idx]
+                except IndexError:
+                    typ = key
+                lookup.register( lookup.RELTYPE2NAME, key, typ )
+            # for idx in range( len( lst_typ )):
+            #     typ = lst_typ[idx]
+            #     try:
+            #         key = lst_key[idx]
+            #     except IndexError:
+            #         key = key
+            #     if key == "":
+            #         continue
+            #     lookup.registerWithDuplicates( lookup.TYPE2RELTYPE, typ, key )
     
     def create( self, data: dict ) -> dict:
         """
@@ -189,13 +215,16 @@ class ConfigElement( object ):
         """
         if not "L" in self.OPERATIONS:
             raise exception.AirlockInvalidOperation()
-        if self.RELATIONSHIPS == None:
+        if self.RELATIONPATH == None:
             raise exception.AirlockNotSupportedError()
-        try:
-            idx = self.RELATIONTYPES.index( connection )
-        except ValueError:
-            raise exception.AirlockInternalError()
-        subpath = self.RELATIONSHIPS[idx]
+        if self.RELATIONDATA:
+            try:
+                idx = self.RELATIONDATA.index( connection )
+            except ValueError:
+                raise exception.AirlockInvalidRelationshipTypeError()
+            subpath = self.RELATIONPATH[idx]
+        else:
+            subpath = connection
         data = {"data": [{'type': connection, 'id': relation_id}]}
         if meta:
             data['meta'] = meta
@@ -218,13 +247,16 @@ class ConfigElement( object ):
         """
         if not "L" in self.OPERATIONS:
             raise exception.AirlockInvalidOperation()
-        if self.RELATIONSHIPS == None:
+        if self.RELATIONPATH == None:
             raise exception.AirlockNotSupportedError()
-        try:
-            idx = self.RELATIONTYPES.index( connection )
-        except ValueError:
-            raise exception.AirlockInternalError()
-        subpath = self.RELATIONSHIPS[idx]
+        if self.RELATIONDATA:
+            try:
+                idx = self.RELATIONDATA.index( connection )
+            except ValueError:
+                raise exception.AirlockInvalidRelationshipTypeError()
+            subpath = self.RELATIONPATH[idx]
+        else:
+            subpath = connection
         data = {"data": [{'type': connection, 'id': relation_id}]}
         resp = self.delete( id, f"relationships/{subpath}", data=data, expect=[204,404] )
         if not resp:
@@ -355,7 +387,7 @@ class ConfigElement( object ):
             return ""
     
     def _document_type( self, subpath: str ) -> str:
-        typename = lookup.get( LOOKUP_TABLENAME, subpath )
+        typename = lookup.get( lookup.PATH2TYPENAME, subpath )
         return typename if typename else subpath
     
         if subpath == "json-web-key-sets/remotes":

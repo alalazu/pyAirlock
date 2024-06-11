@@ -31,10 +31,12 @@ class IPList( element.ConfigElement ):
     CRUD and connection management REST API for IP address lists
     """
     ELEMENT_PATH = "ip-address-lists"
-    RELATIONSHIPS = ["mappings-whitelists", "mappings-backlists", "mappings-backlist-exceptions",
+    RELATIONPATH = ["mappings-whitelists", "mappings-backlists", "mappings-backlist-exceptions",
                      "mappings-request-frequency-filter-whitelists"]
-    RELATIONTYPES = ["ip-address-list", "ip-address-list", "ip-address-list",
+    RELATIONTYPE = ["ip-address-list", "ip-address-list", "ip-address-list",
                      "ip-address-list"]
+    RELATIONDATA = ["ip-address-whitelists", "ip-address-blacklists", "ip-address-blacklist-exceptions",
+                     ""]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "ip-address-list")]

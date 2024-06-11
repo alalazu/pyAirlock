@@ -34,7 +34,8 @@ from urllib3.exceptions import MaxRetryError
 from requests.adapters import HTTPAdapter, Retry
 
 from ..common import exception
-from ..common import log, utils
+from ..common import log, lookup, utils
+from .config_api import element
 from .config_api.api_policy import APIPolicy
 from .config_api.anomalyshield_application import AnomalyShieldApplication
 from .config_api.anomalyshield_rule import AnomalyShieldRule

@@ -31,6 +31,6 @@ class NetworkServicesSettings( element.ConfigElement ):
     REST API to handle network services settings
     """
     ELEMENT_PATH = "network-services"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     OPERATIONS = "RU"
     

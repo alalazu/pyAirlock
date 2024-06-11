@@ -31,5 +31,5 @@ class NetworkEndpoint( element.ConfigElement ):
     CRUD and connection management REST API for network endpoints
     """
     ELEMENT_PATH = "allowed-network-endpoints"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     

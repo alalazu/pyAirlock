@@ -31,6 +31,6 @@ class LogSettings( element.ConfigElement ):
     REST API to handle log settings
     """
     ELEMENT_PATH = "log"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     OPERATIONS = "RU"
     

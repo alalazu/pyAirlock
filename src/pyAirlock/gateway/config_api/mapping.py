@@ -30,21 +30,32 @@ class Mapping( element.ConfigElement ):
     """
     CRUD and connection management REST API for mappings
     """
+    # subpath after /configuration
     ELEMENT_PATH = "mappings"
-    RELATIONSHIPS = ["virtual-hosts", "back-end-groups", "openapi-documents", "graphql-documents",
-                     "json-web-key-sets/remotes", "json-web-key-sets/locals",
-                     "ip-address-whitelists", "ip-address-blacklists", "ip-address-blacklist-exceptions",
-                     "bot-management-source-ip-address-whitelists",
-                     "icap-request-client-views", "icap-request-backend-views",
-                     "icap-response-client-views", "icap-response-backend-views",
-                     "templates", "api-policy-services", "anomaly-shield-applications"]
-    RELATIONTYPES = ["virtual-host", "back-end-group", "openapi-document", "graphql-document",
-                     "remote-json-web-key-set", "local-json-web-key-set",
-                     "ip-address-list", "ip-address-list", "ip-address-list",
-                     "ip-address-list",
-                     "icap-request-client-view", "icap-request-backend-view",
-                     "icap-response-client-view", "icap-response-backend-view",
-                     "mapping-template", "api-policy-service", "anomaly-shield-application"]
+    # subpath after /configuration/.../relationships
+    RELATIONPATH = ["virtual-hosts", "back-end-groups", "openapi-document", "graphql-document",
+                    "json-web-key-sets/remotes", "json-web-key-sets/locals",
+                    "ip-address-whitelists", "ip-address-blacklists", "ip-address-blacklist-exceptions",
+                    "bot-management-source-ip-address-whitelist",
+                    "icap-request-client-view", "icap-request-backend-view",
+                    "icap-response-client-view", "icap-response-backend-view",
+                    "template", "api-policy-service", "anomaly-shield-application"]
+    # config element type_name of the referenced resource
+    RELATIONTYPE = ["virtual-host", "back-end-group", "openapi-document", "graphql-document",
+                    "remote-json-web-key-set", "local-json-web-key-set",
+                    "ip-address-list", "ip-address-list", "ip-address-list",
+                    "ip-address-list",
+                    "icap-request-client-view", "icap-request-backend-view",
+                    "icap-response-client-view", "icap-response-backend-view",
+                    "mapping-template", "api-policy-service", "anomaly-shield-application"]
+    # key in config element data for relationships
+    RELATIONDATA = ["virtual-hosts", "back-end-groups", "openapi-document", "graphql-document",
+                    "local-json-web-key-sets", "remote-json-web-key-sets",
+                    "ip-address-whitelists", "ip-address-blacklists", "ip-address-blacklist-exceptions",
+                    "bot-management-source-ip-address-whitelist",
+                    "icap-request-client-views", "icap-request-backend-views",
+                    "icap-response-client-views", "icap-response-backend-views",
+                    "template", "api-policy-service", "anomaly-shield-application"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "mapping")]

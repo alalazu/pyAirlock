@@ -31,7 +31,8 @@ class ICAP( element.ConfigElement ):
     CRUD and connection management REST API for ICAP services
     """
     ELEMENT_PATH = "icap-environments"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
+    RELATIONDATA = ["icap-request-client-views", "icap-request-backend-views", "icap-response-backend-views", "icap-respones-client-views"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "icap-environment")]

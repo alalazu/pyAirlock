@@ -32,8 +32,8 @@ class BackendGroup( element.ConfigElement ):
     """
 
     ELEMENT_PATH = "back-end-groups"
-    RELATIONSHIPS = ["mappings", "kerberos-environments", "client-certificates"]
-    RELATIONTYPES = ["mapping", "kerberos-environment", "ssl-certificate"]
+    RELATIONPATH = ["mappings", "kerberos-environment", "client-certificate"]
+    RELATIONTYPE = ["mapping", "kerberos-environment", "ssl-certificate"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "back-end-group")]

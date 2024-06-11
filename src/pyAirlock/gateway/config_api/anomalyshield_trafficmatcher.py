@@ -31,8 +31,8 @@ class AnomalyShieldTrafficMatcher( element.ConfigElement ):
     CRUD and connection management REST API for Anomaly Shield traffic matchers
     """
     ELEMENT_PATH = "anomaly-shield-traffic-matchers"
-    RELATIONSHIPS = ["ip-address-lists"]
-    RELATIONTYPES = ["ip-address-list"]
+    RELATIONPATH = ["ip-address-lists"]
+    RELATIONTYPE = ["ip-address-list"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "anomaly-shield-traffic-matchers")]

@@ -33,8 +33,8 @@ class Node( element.ConfigElement ):
     CRUD and connection management REST API for Airlock Gateway cluster nodes
     """
     ELEMENT_PATH = "nodes"
-    RELATIONSHIPS = ["ssl-certificates"]
-    RELATIONTYPES = ["ssl-certificate"]
+    RELATIONPATH = ["ssl-certificate"]
+    RELATIONTYPE = ["ssl-certificate"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "node")]

@@ -31,8 +31,8 @@ class AnomalyShieldApplication( element.ConfigElement ):
     CRUD and connection management REST API for Anomaly Shield applications
     """
     ELEMENT_PATH = "anomaly-shield-applications"
-    RELATIONSHIPS = ["mappings", "anomaly-shield-rules", "training-data-collection-exclusions", "anomaly-detection-exclusions", "response-rule-exceptions"]
-    RELATIONTYPES = ["mapping", "anomaly-shield-rule", "anomaly-shield-traffic-matcher", "anomaly-shield-traffic-matcher", "anomaly-shield-traffic-matcher"]
+    RELATIONPATH = ["mappings", "anomaly-shield-rules", "training-data-collection-exclusions", "anomaly-detection-exclusions", "response-rule-exceptions"]
+    RELATIONTYPE = ["mapping", "anomaly-shield-rule", "anomaly-shield-traffic-matcher", "anomaly-shield-traffic-matcher", "anomaly-shield-traffic-matcher"]
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "anomaly-shield-application")]

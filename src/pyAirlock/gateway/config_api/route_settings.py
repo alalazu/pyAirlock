@@ -31,7 +31,7 @@ class RouteSettings( element.ConfigElement ):
     REST API to handle (default) route settings
     """
     ELEMENT_PATH = "routes/default"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     OPERATIONS = "RU"
     
     def _registerLookup( self ):

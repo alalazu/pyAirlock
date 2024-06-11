@@ -31,7 +31,7 @@ class AnomalyShieldTrigger( element.ConfigElement ):
     CRUD and connection management REST API for Anomaly Shield triggers
     """
     ELEMENT_PATH = "anomaly-shield-triggers"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     
     def _registerLookup( self ):
         return [(self.ELEMENT_PATH, "anomaly-shield-trigger")]

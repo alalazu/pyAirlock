@@ -31,6 +31,6 @@ class ReportingSettings( element.ConfigElement ):
     REST API to handle reporting settings
     """
     ELEMENT_PATH = "reporting"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     OPERATIONS = "RU"
     

@@ -31,26 +31,26 @@ class RouteIPV4Destination( element.ConfigElement ):
     CRUD and connection management REST API for IPv4 destination route entries
     """
     ELEMENT_PATH = "routes/ipv4/destination"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     
 class RouteIPV6Destination( element.ConfigElement ):
     """
     CRUD and connection management REST API for IPv6 destination route entries
     """
     ELEMENT_PATH = "routes/ipv6/destination"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     
 class RouteIPV4Source( element.ConfigElement ):
     """
     CRUD and connection management REST API for IPv4 source route entries
     """
     ELEMENT_PATH = "routes/ipv4/source"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     
 class RouteIPV6Source( element.ConfigElement ):
     """
     CRUD and connection management REST API for IPv6 source route entries
     """
     ELEMENT_PATH = "routes/ipv6/source"
-    RELATIONSHIPS = []
+    RELATIONPATH = []
     
