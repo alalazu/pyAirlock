@@ -89,7 +89,6 @@ class ConfigElement( object ):
         Returns: REST API response element `data` as dict
         """
         if not "C" in self.OPERATIONS:
-            print( self, data )
             raise exception.AirlockInvalidOperation()
         if 'relationships' in data:
             raise exception.AirlockDataConnectionError()
@@ -200,13 +199,13 @@ class ConfigElement( object ):
             return False
         return True
     
-    def addConnection( self, connection: str, id: int, relation_id: int, meta: dict=None ) -> bool:
+    def addConnection( self, reltype: str, id: int, relation_id: int, meta: dict=None ) -> bool:
         """
         Use REST API to add a connection
 
         Parameters:
 
-        * `connection`: type of connection to add
+        * `reltype`: type of connection to add
         * `id`: identifier of configuration element to which connection is added
         * `relation_id`: identifier of configuration element to add as new connection
         * `meta`: JSON API meta data for request, usually not required but see ICAP connections for mappings, e.g. https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#add-icap-request-client-view
@@ -217,15 +216,21 @@ class ConfigElement( object ):
             raise exception.AirlockInvalidOperation()
         if self.RELATIONPATH == None:
             raise exception.AirlockNotSupportedError()
+        if relation_id < 0:
+            # builtin object
+            return True
         if self.RELATIONDATA:
             try:
-                idx = self.RELATIONDATA.index( connection )
+                idx = self.RELATIONDATA.index( reltype )
             except ValueError:
                 raise exception.AirlockInvalidRelationshipTypeError()
             subpath = self.RELATIONPATH[idx]
         else:
-            subpath = connection
-        data = {"data": [{'type': connection, 'id': relation_id}]}
+            subpath = reltype
+        if subpath[-1] == 's':
+            data = {"data": [{'type': lookup.get( lookup.RELTYPE2NAME, reltype ), 'id': relation_id}]}
+        else:
+            data = {"data": {'type': lookup.get( lookup.RELTYPE2NAME, reltype ), 'id': relation_id}}
         if meta:
             data['meta'] = meta
         resp = self.patch( id, f"relationships/{subpath}", data=data, expect=[204,404] )
@@ -233,13 +238,13 @@ class ConfigElement( object ):
             return False
         return True
 
-    def removeConnection( self, connection: str, id: int, relation_id: int ) -> bool:
+    def removeConnection( self, reltype: str, id: int, relation_id: int ) -> bool:
         """
         Use REST API to remove a connection
 
         Parameters:
 
-        * `connection`: type of connection to remove
+        * `reltype`: type of connection to remove
         * `id`: identifier of configuration element from which connection is removed
         * `relation_id`: identifier of configuration element to disconnect
 
@@ -249,15 +254,21 @@ class ConfigElement( object ):
             raise exception.AirlockInvalidOperation()
         if self.RELATIONPATH == None:
             raise exception.AirlockNotSupportedError()
+        if relation_id < 0:
+            # builtin object
+            return True
         if self.RELATIONDATA:
             try:
-                idx = self.RELATIONDATA.index( connection )
+                idx = self.RELATIONDATA.index( reltype )
             except ValueError:
                 raise exception.AirlockInvalidRelationshipTypeError()
             subpath = self.RELATIONPATH[idx]
         else:
-            subpath = connection
-        data = {"data": [{'type': connection, 'id': relation_id}]}
+            subpath = reltype
+        if subpath[-1] == 's':
+            data = {"data": [{'type': lookup.get( lookup.RELTYPE2NAME, reltype ), 'id': relation_id}]}
+        else:
+            data = {"data": {'type': lookup.get( lookup.RELTYPE2NAME, reltype ), 'id': relation_id}}
         resp = self.delete( id, f"relationships/{subpath}", data=data, expect=[204,404] )
         if not resp:
             return False
