@@ -33,12 +33,18 @@ class RouteIPV4Destination( element.ConfigElement ):
     ELEMENT_PATH = "routes/ipv4/destination"
     RELATIONPATH = []
     
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "route-ipv4-destination")]
+    
 class RouteIPV6Destination( element.ConfigElement ):
     """
     CRUD and connection management REST API for IPv6 destination route entries
     """
     ELEMENT_PATH = "routes/ipv6/destination"
     RELATIONPATH = []
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "route-ipv6-destination")]
     
 class RouteIPV4Source( element.ConfigElement ):
     """
@@ -47,10 +53,16 @@ class RouteIPV4Source( element.ConfigElement ):
     ELEMENT_PATH = "routes/ipv4/source"
     RELATIONPATH = []
     
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "route-ipv4-source")]
+    
 class RouteIPV6Source( element.ConfigElement ):
     """
     CRUD and connection management REST API for IPv6 source route entries
     """
     ELEMENT_PATH = "routes/ipv6/source"
     RELATIONPATH = []
+    
+    def _registerLookup( self ):
+        return [(self.ELEMENT_PATH, "route-ipv6-source")]
     

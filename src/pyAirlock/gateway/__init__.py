@@ -224,7 +224,7 @@ class Session( object ):
         elif type_name == "icap-environment":
             return self.icap
         elif type_name == "ip-address-list":
-            return self.icap
+            return self.iplist
         elif type_name == "local-json-web-key-sets":
             return self.jwks_local
         elif type_name == "remote-json-web-key-sets":
@@ -239,6 +239,14 @@ class Session( object ):
             return self.node
         elif type_name == "openapi-document":
             return self.openapi
+        elif type_name == "route-ipv4-source":
+            return self.routes_ipv4_source
+        elif type_name == "route-ipv4-destination":
+            return self.routes_ipv4_destination
+        elif type_name == "route-ipv6-source":
+            return self.routes_ipv6_source
+        elif type_name == "route-ipv6-destination":
+            return self.routes_ipv6_destination
         elif type_name == "virtual-host":
             return self.vhost
         elif type_name == "anomaly-shield":
