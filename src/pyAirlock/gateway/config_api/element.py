@@ -153,6 +153,9 @@ class ConfigElement( object ):
             del data['relationships']
         except KeyError:
             pass
+        if id < 0:
+            # builtin object
+            return self.read( id )
         data_type = self._document_type( self.ELEMENT_PATH )
         try:
             if data['type'] != data_type:
@@ -188,6 +191,9 @@ class ConfigElement( object ):
         """
         if not "D" in self.OPERATIONS:
             raise exception.AirlockInvalidOperation()
+        if id < 0:
+            # builtin object
+            return False
         if "C" in self.OPERATIONS:
             # if element can be created, we have an id
             path = f"/configuration/{self.ELEMENT_PATH}/{id}"
