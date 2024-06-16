@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
+import os
 import yaml
 
 from . import exception, utils
@@ -37,6 +38,7 @@ class Config( object ):
         self._fname = fname
         self._config = {}
         self._valid = False
+        self._update_ts = 0
 
     def load( self, fname: str=None ):
         """
@@ -56,6 +58,7 @@ class Config( object ):
         except yaml.scanner.ScannerError:
             raise exception.AirlockConfigError()
         self._valid = True
+        self._update_ts = os.stat( self._fname ).st_mtime
 
     def get( self, path: str, default: str=None, base: dict=None ):
         """
@@ -80,4 +83,12 @@ class Config( object ):
         Return true if configuration has been loaded
         """
         return self._valid
+    
+    def needsReload( self ) -> bool:
+        """
+        Return true if configuration file has been updated since last load
+        """
+        if os.stat( self._fname ).st_mtime > self._update_ts:
+            return True
+        return False
     
