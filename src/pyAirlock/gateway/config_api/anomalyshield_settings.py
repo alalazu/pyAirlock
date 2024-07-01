@@ -19,7 +19,7 @@
 """
 Handle Anomaly Shield Settings
 
-Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#host) documentation to understand how
+Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#anomaly-shield) documentation to understand how
 it works, e.g. the requirements for loading and activating a configuration.
 """
 

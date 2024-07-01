@@ -149,7 +149,7 @@ class Session( object ):
 
         #: Settings for `pyAirlock.gateway.config_api.anomalyshield_settings.AnomalyShieldSettings`
         self.settings_anomalyshield = AnomalyShieldSettings( self._name, self, self._run_info )
-        #: Settings for `pyAirlock.gateway.config_api.log_settings_settings.LogSettings`
+        #: Settings for `pyAirlock.gateway.config_api.log_settings.LogSettings`
         self.settings_log = LogSettings( self._name, self, self._run_info )
         #: Settings for `pyAirlock.gateway.config_api.network_services_settings.NetworkServicesSettings`
         self.settings_network_services = NetworkServicesSettings( self._name, self, self._run_info )

@@ -18,6 +18,7 @@
 
 """
 Handle OpenAPI Document
+
 Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#openapi) documentation to understand how
 it works, e.g. the requirements for loading and activating a configuration.
 """

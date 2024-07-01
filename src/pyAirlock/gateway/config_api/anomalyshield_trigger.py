@@ -19,7 +19,7 @@
 """
 Handle Anomaly Shield Trigger
 
-Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#api-policy-service)
+Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#anomaly-shield-triggers)
 documentation to understand how it works, e.g. the requirements for loading and activating a configuration.
 """
 

@@ -61,13 +61,13 @@ Read documentation by opening html/index.html in your browser of choice.
 
 ### Usage
 ```python
-from pyAirlock.gateway.config_api import gateway
+from pyAirlock import gateway
 from pyAirlock.common import config
 
 cfg = config.Config( "src/samples/config.yaml" )
 cfg.load()
 server = cfg.get( 'servers.test' )[0]
-gw = gateway.GW( "test", cfg.get( 'hostname', base=server ), cfg.get( 'apikey', base=server ))
+gw = gateway.Session( cfg.get( 'hostname', base=server ), cfg.get( 'apikey', base=server ))
 gw.setTLSVerify( False )
 gw.connect()
 gw.get( "/configuration/configurations" ).json()

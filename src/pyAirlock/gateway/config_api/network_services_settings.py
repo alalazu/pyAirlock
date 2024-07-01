@@ -19,7 +19,7 @@
 """
 Handle Network Services Settings
 
-Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#host) documentation to understand how
+Please refer to the [Airlock Gateway REST API](https://docs.airlock.com/gateway/latest/rest-api/config-rest-api.html#NetworkServices) documentation to understand how
 it works, e.g. the requirements for loading and activating a configuration.
 """
 

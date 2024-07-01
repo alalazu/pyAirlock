@@ -50,7 +50,7 @@ class Configuration( element.ConfigElement ):
         Parameters:
 
         * `name` is a user-friendly (short) name
-        * `gw` references a `gateway.GW` object to communicate with the Airlock Gateway
+        * `gw` references a `pyAirlock.gateway.Session` object to communicate with the Airlock Gateway
         * `run_info` is provided by the Airscript shell and allows access to configuration and command line parameters
         """
         super().__init__( name, gw, run_info )
