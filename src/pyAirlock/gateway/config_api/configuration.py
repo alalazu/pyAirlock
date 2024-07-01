@@ -149,9 +149,12 @@ class Configuration( element.ConfigElement ):
             params['options'] = self._activation_options
         else:
             params = {'options': {}}
-        params['options']['autoMerge'] = utils.getDictValue( options, 'merge', True )
-        params['options']['failoverAction'] = utils.getDictValue( options, 'cluster', True )
-        params['options']['ignoreOutdatedConfiguration'] = utils.getDictValue( options, 'ignoreChanged', False )
+        if 'autoMerge' not in params['options']:
+            params['options']['autoMerge'] = utils.getDictValue( options, 'merge', True )
+        if 'failoverAction' not in params['options']:
+            params['options']['failoverAction'] = utils.getDictValue( options, 'cluster', True )
+        if 'ignoreOutdatedConfiguration' not in params['options']:
+            params['options']['ignoreOutdatedConfiguration'] = utils.getDictValue( options, 'ignoreChanged', False )
         if comment == None:
             self._log.warn( "No comment specified! If you don't want to specify one, please use '<obj>.activate( comment=\"\" )'" )
             return False
@@ -160,8 +163,7 @@ class Configuration( element.ConfigElement ):
         if self.validate() != []:
             self._log.warning( f"{self._name}: Config not valid" )
             return False
-        params = json.dumps( {'comment': comment })
-        resp = self.post( subpath="activate", data=params, expect=[200,400,409] )
+        resp = self.post( subpath="activate", data=json.dumps( params ), expect=[200,400,409] )
         if resp.status_code != 200:
             self._log.error( f"{self._name}: Config activation failed: {resp.status_code} ({resp.text})" )
             return False
